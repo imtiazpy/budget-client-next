@@ -1,0 +1,20 @@
+version: '3.7'
+
+services:
+  app:
+    build:
+      context: .
+    env_file: # if .env in root, we have to show .env here must
+      - ./.env
+  nginx:
+    build:
+      context: ./nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    env_file: # if .env in root, we have to show .env here must
+      - ./.env
+    volumes:
+      - /etc/letsencrypt/archive/million.creatorwizard.com/:/etc/nginx/ssl
+    depends_on:
+      - app
