@@ -21,9 +21,9 @@ const useApiHelper = () => {
         deleteLinks: (pk, params={}) => axios.delete(`challenge/api/v1/social-link/${pk}`, {params : params}),
 
         // user profile
-        getUserProfile: (params={}) => axios.get(`users/api/v1/influnetial-profile/`, {params: params}),
+        getUserProfile: (params={}) => axios.get(`api/v1/users/profile/`, {params: params}),
         getUserProfileDetails: (pk, params={}) => axios.get(`users/api/v1/influnetial-profile-details/${pk}`, {params: params}),
-        updateUserProfile: (data, params={}) => axios.patch(`users/api/v1/influnetial-profile/`, data, {params: params}),
+        updateUserProfile: (data, params={}) => axios.patch(`api/v1/users/profile/`, data, {params: params}),
         uploadAvatar: (data, params={}) => axios.patch(`users/api/v1/avatar-upload/`, data, {params: params}),
     };
 
