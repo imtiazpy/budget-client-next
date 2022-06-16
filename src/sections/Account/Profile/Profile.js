@@ -20,7 +20,15 @@ export default function Profile() {
 
     useEffect(() => {
       api.getUserProfile().then((response) => {
-        setFormData(response);
+        setFormData({
+          name: response.name, 
+          profile: {
+            gender: response.profile.gender,
+            city: response.profile.city,
+            country: response.profile.country
+          }
+        }
+        );
       }).catch((error) => {
         //
       })
