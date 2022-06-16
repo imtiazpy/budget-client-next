@@ -88,7 +88,7 @@ const DashboardWrapper = ({children, count}) => {
                     </div>
 
                     <div className="col-12 col-md-8 col-lg-9 text-center">
-                        <h1>Hey {userProfile.first_name} {userProfile.last_name} </h1>
+                        <h1>Hey {userProfile.name}</h1>
                         <h4>Welcome to Shine's Financial Management App</h4>
                     </div>
                 </div>
