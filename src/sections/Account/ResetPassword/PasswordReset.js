@@ -4,20 +4,22 @@ import { Container, Row, Col } from "react-bootstrap";
 import ResetForm from "./style";
 import ResetBgImg from "~image/accounts/reset-pass-img.jpg";
 import { Link } from "~components";
+import { toast } from "react-toastify";
 
 import GlobalContext from '../../../context/GlobalHeaderContext'
 import useApiHelper from '../../../api';
-import router from "next/router";
+import { useRouter } from "next/router";
 import Input from "../../../components/extra/Input";
 
 
 export default function ResetSection() {
     const [formData, setFormData] = useState({});
 
+    const router = useRouter()
     const gContext = useContext(GlobalContext);
     const api = useApiHelper();
 
-    const onPasswordRest = (e) => {
+    const onPasswordReset = (e) => {
         e.preventDefault();
         var payload = {
             ...formData,
@@ -25,10 +27,12 @@ export default function ResetSection() {
             token: router.query.token
         };
         api.passwordResetConfirm(payload).then((response)=> {
-            console.log(response);
-            router.push('/dashboard')
+            toast.success("Password has been changed")
+            router.push('/sign-in')
         }).catch(err =>{
-            gContext.validationErrorCB(err);
+            // gContext.validationErrorCB(err);
+            gContext.setValidationError(err.response.data)
+            toast.error("Password changing failed")
         });
     };
 
@@ -49,14 +53,14 @@ export default function ResetSection() {
             <ResetForm.Box plXXL="60px">
               <ResetForm.Title as="h2">Reset Password</ResetForm.Title>
               <ResetForm.FromSection>
-                <form onSubmit={onPasswordRest}>
+                <form onSubmit={onPasswordReset}>
                   <div className="form-floating">
                     <Input
                       className="form-control"
                       type="password"
                       placeholder="Your Email"
                       id="floatinginput2"
-                      name="new_password1"
+                      name="new_password"
                       onChange={handleChange}
                     />
                     <label htmlFor="floatinginput2">New Password</label>
@@ -67,7 +71,7 @@ export default function ResetSection() {
                       type="password"
                       placeholder="Your Email"
                       id="floatinginput2"
-                      name="new_password2"
+                      name="re_new_password"
                       onChange={handleChange}
                     />
                     <label htmlFor="floatinginput2">Confirm New Password</label>

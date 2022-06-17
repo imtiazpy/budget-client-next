@@ -2,8 +2,6 @@ import React from "react"
 import Image from "next/image"
 import { Navbar } from "react-bootstrap"
 import Link from "../Link";
-// import siteBrandDark from "./image/logo/logo-black.png"
-// import siteBrandLight from "./image/logo/cw-horizontal-black.png"
 import Menu from "./Menu"
 const SiteNavbar = ({buttonBlock,darkLogo,customLogo,defaultLogo}) => {
 

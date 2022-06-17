@@ -4,6 +4,9 @@ import { Container, Row, Col } from "react-bootstrap";
 import ResetForm from "./style";
 import ResetBgImg from "~image/accounts/reset-pass-img.jpg";
 import { Link } from "~components";
+import Input from "../../../components/extra/Input"
+import { toast } from "react-toastify";
+import { useRouter } from "next/router";
 
 import GlobalContext from '../../../context/GlobalHeaderContext'
 import useApiHelper from '../../../api';
@@ -15,6 +18,7 @@ export default function ResetSection() {
 
   const gContext = useContext(GlobalContext);
   const api = useApiHelper();
+  const router = useRouter()
 
   const handleClose = () => {
     gContext.togglePasswordModal();
@@ -23,10 +27,12 @@ export default function ResetSection() {
 
   const onPasswordResetRequest = (e) => {
     e.preventDefault();
-    api.passwordReset(formData).then((response)=> {
-      setSuccessText(response.detail);
+    api.passwordResetRequest(formData).then((response)=> {
+      toast.success("Mail sent")
+      gContext.setValidationError(null)
+      router.push('/')
     }).catch((error) => {
-      //console.log(error);
+      gContext.setValidationError(error.response.data)
     });
   }
 
@@ -52,7 +58,7 @@ export default function ResetSection() {
               <ResetForm.FromSection>
                 <form onSubmit={onPasswordResetRequest}>
                   <div className="form-floating">
-                    <input
+                    <Input
                       className="form-control"
                       type="email"
                       placeholder="Your Email"
@@ -61,9 +67,6 @@ export default function ResetSection() {
                       onChange={handleChange}
                     />
                     <label htmlFor="floatinginput2">Your Email</label>
-                  </div>
-                  <div className="s-instagram">
-                    {successText}
                   </div>
                   <ResetForm.FormButton type="submit" className="mt-2 mb-5 btn-purple-heart">
                     Send Reset Link
