@@ -59,6 +59,7 @@ const GlobalHeaderProvider = ({children}) =>{
     deleteAllCookies();
     setIsLoggedIn(false);
     router.push('/')
+    toast.success("You're logged out")
     // api.logout().then((response) => {
     //   router.push('/')
     // }, (err) => {
