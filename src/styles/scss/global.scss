@@ -9,6 +9,10 @@
 @import "helpers/mixins";
 // @import "./react-header";
 @import "bs-theming/fonts";
+
+@import "~ag-grid-community/src/styles/ag-grid.scss";
+@import "~ag-grid-community/src/styles/ag-theme-alpine/sass/ag-theme-alpine-mixin.scss";
+
 span,
 a {
   display: inline-block;
@@ -189,4 +193,19 @@ div[role="gridcell"] > a:empty::after {
 .s-twitter:hover,
 .s-twitch:hover{
   opacity: 0.8;
+}
+
+.ag-theme-custom {
+  @include ag-theme-alpine((
+    header-background-color: #3b5998,
+    odd-row-background-color: lightgray,
+    // border-color: #3b5998,
+    header-column-separator-color: lightgray,
+    header-column-resize-handle-height: 100%,
+  ));
+
+  .ag-header {
+    font-style: italic;
+    font-size: 14px;
+  } 
 }

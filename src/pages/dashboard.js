@@ -3,7 +3,6 @@ import React, {useState, useEffect} from "react";
 // import FooterSection from "~sections/utility/Footer";
 import styled from "styled-components";
 import useApiHelper from '../api';
-import LinkTable from "../components/extra/linkTable";
 import Pagination from "../components/extra/Pagination"
 import Button from '../components/extra/button'
 import Link from "../components/Core/Link";
@@ -58,21 +57,7 @@ const Dashboard = () => {
          <DashboardWrapper count={tableData?.count}>
             <StyledTable className="p-0 mt-3">
                 <Container className="p-0">
-                {tableData &&
-                    <>
-                    <LinkTable tableData={tableData.results} />
-                    <Pagination 
-                        pageLinks={
-                        tableData?.current_displayable_pagination?.page_links
-                        }
-                        previous={tableData?.previous_number}
-                        next={tableData?.next_number}
-                        totalPage={tableData?.page_count}
-                        current={tableData?.current_number}
-                        getTableData={getTableData}
-                    />
-                    </>
-                }
+                
                 </Container>
             </StyledTable>
 

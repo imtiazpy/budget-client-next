@@ -3,7 +3,6 @@ import { PageWrapper } from "~components/Core"
 import FooterOne from "~sections/marketing/FooterOne"
 import HeaderButton from "~sections/marketing/Header"
 import NewHero from '~sections/marketing/NewHero'
-import Leaderboard from '~components/leaderboard';
 import TryBudget from "~components/TryBudget"
 
 const header = {
