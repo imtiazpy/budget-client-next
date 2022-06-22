@@ -36,33 +36,28 @@ const TryBudget = () => {
   const handleFormSubmit = (data) => {
     // TODO: Fix duplicate id issue and beautify the method
     const stored = fetchData()
-    const oldIds = []
+
+    const constraints = {}
+
     for (const d of stored) {
-      oldIds.push(d.id)
+      constraints[d.id] = 1
     }
 
     let newId = Math.floor(Math.random()* 5) + 1;
 
-    if (oldIds.length !== 5 && oldIds.includes(newId)) {
-      newId = Math.floor(Math.random()* 5) + 1;
-      data['id'] = newId
-      stored.push(data)
-      localStorage.setItem('incomeData', JSON.stringify(stored))
-      setTemp([...temp, {data}])
-    } else if (oldIds.length === 5) {
-      toast.error("You can't add more than 5 rows in trial!", {theme: "colored"})
-    } else if (oldIds.includes(newId)) {
-      newId = Math.floor(Math.random()* 5) + 1;
-      data['id'] = newId
-      stored.push(data)
-      localStorage.setItem('incomeData', JSON.stringify(stored))
-      setTemp([...temp, {data}])
+    if (stored.length === 5) {
+      toast.error("You can't add more than 5 rows in trial table!", {theme: "colored"})
     } else {
+
+      while (constraints[newId] >= 1) {
+        newId = Math.floor(Math.random()* 5) + 1;
+      }
+
       data['id'] = newId
       stored.push(data)
       localStorage.setItem('incomeData', JSON.stringify(stored))
       setTemp([...temp, {data}])
-    }    
+    }
   }
 
   const handleDelete = (id) => {
@@ -112,7 +107,7 @@ const TryBudget = () => {
                 </Col>
                 {/* <Col md="12">
                   <CustomDataTable 
-                    rowData={expenseData} 
+                    // rowData={expenseData} 
                     nameField="expense" 
                     header="EXPENSE"
                   />
