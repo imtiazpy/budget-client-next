@@ -1,6 +1,8 @@
 import React, {useEffect, useState, useRef, useMemo, useCallback} from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import { BsFillPlusCircleFill, BsFillPencilFill, BsFillTrashFill } from 'react-icons/bs'
+import { toast } from "react-toastify";
+
 import Button from '~components/extra/button';
 import { NewRow } from '~components/Modals';
 
@@ -9,9 +11,13 @@ import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
 
 const CustomDataTable = (props) => {
-  const {rowData, nameField, header, pinnedBottomRowData, handleFormSubmit, handleDelete, updateRow} = props
+  const {nameField, header, pinnedBottomRowData} = props
   const gridRef = useRef();
-  const [formData, setFormData] = useState({})
+
+  const [formData, setFormData] = useState([])
+  const [singleData, setSingleData] = useState({})
+  const [temp, setTemp] = useState(false)
+
   const [modalShow, setModalShow] = useState(false)
   const [columnDefs, setColumnDefs] = useState([
     { 
@@ -44,48 +50,94 @@ const CustomDataTable = (props) => {
         </div>
       )
     }},
-    
   ])
 
+  const fetchData = () => {
+    let data;
+    if (nameField === 'income') {
+      data = JSON.parse(localStorage.getItem('incomeData'))
+    } else {
+      data = JSON.parse(localStorage.getItem('expenseData'))
+    }    
+    return data ? data : []
+  }
+
+  const saveData = (data) => {
+    if (nameField === 'income') {
+      localStorage.setItem('incomeData', JSON.stringify(data))
+    } else {
+      localStorage.setItem('expenseData', JSON.stringify(data))
+    }
+  }
+
   const handleChange = (e) => {
-    setFormData({...formData, [e.target.name]: e.target.value})
+    setSingleData({...singleData, [e.target.name]: e.target.value})
   }
 
   const handleSubmit = (e) => {
-    // method for adding new row and updating existing one
     e.preventDefault()
-    const stored = JSON.parse(localStorage.getItem('incomeData'))
-    const oldIds = []
+    const stored = fetchData()
+    const oldIds = new Set()
     for (const d of stored) {
-      oldIds.push(d.id)
+      oldIds.add(d.id)
     }
-
-    if (oldIds.includes(formData?.id)) {
-      updateRow(formData)
+    console.log(oldIds)
+    if (oldIds.has(singleData?.id)) {
+      // update existing data
+      console.log("from update")
+      for (const data of stored) {
+        if (data.id === singleData.id) {
+          if (nameField === 'income') {
+            data.income = singleData.income
+          } else {
+            data.expense = singleData.expense
+          }
+          data.monthly = singleData.monthly
+        }
+      }
+      saveData(stored)
+      setTemp(!temp)
     } else {
-      handleFormSubmit(formData)
-    } 
+      // add new data
+      if (stored.length === 5) {
+        toast.error("You can't add more than 5 rows in trial table!", {theme: "colored"})
+      } else {    
+        let newId = Math.floor(Math.random()* 5) + 1;
+        while (oldIds.has(newId)) {
+          newId = Math.floor(Math.random()* 5) + 1;
+          console.log("from while loop")
+        }  
+        const newSingleData = {...singleData}
+        newSingleData['id'] = newId
+        stored.push(newSingleData)
+        saveData(stored)
+        setTemp(!temp)
+      }
+    }
 
     hideModal()
   }
 
   const handleUpdate = (data) => {
-    setFormData(data)
+    setSingleData(data)
     setModalShow(!modalShow)
+  }
+
+  const handleDelete = (id) => {
+    const confirm = window.confirm("Are you sure, You want to delete the row?")
+    if (confirm) {
+      const stored = fetchData()
+      const newData = stored.filter((row) => row.id !== id)
+      
+      saveData(newData)
+      setFormData(newData)
+    } 
   }
 
   const hideModal = () => {
     setModalShow(!modalShow)
-    setFormData(null)
+    setSingleData(null)
   }
-
-  // const update = (data) => {
-  //   // const stored = JSON.parse(localStorage.getItem('incomeData'))
-  //   // const data = stored.find(d => d.id === id)
-  //   setFormData(data)
-  //   handleUpdate(data)
-  //   setModalShow(!modalShow)
-  // }
 
   // DefaultColDef sets props common to all Columns
   const defaultColDef = useMemo( ()=> {
@@ -93,9 +145,13 @@ const CustomDataTable = (props) => {
       sortable: true,
       filter: true,
       resizable: true,
-      // editable: true,
     }
   }, []);
+
+  useEffect(() => {
+    const data = fetchData()
+    setFormData(data)
+  }, [temp])
 
   return (
       <>
@@ -103,7 +159,7 @@ const CustomDataTable = (props) => {
           <div className="ag-theme-custom" style={{height: 400}}>
             <AgGridReact
               ref={gridRef}
-              rowData={rowData}
+              rowData={formData}
               columnDefs={columnDefs}
               defaultColDef={defaultColDef}
               headerHeight= {70}
@@ -126,10 +182,10 @@ const CustomDataTable = (props) => {
           <NewRow 
             // This is a modal for adding new row to the table
             show={modalShow}
-            // onHide={() => setModalShow(!modalShow)}
             onHide={() => hideModal()}
             handleChange={handleChange}
-            formData={formData}
+            singleData={singleData}
+            nameField={nameField}
             handleSubmit={handleSubmit}
           />
         </div>

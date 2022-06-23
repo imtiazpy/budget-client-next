@@ -5,7 +5,7 @@ import Input from '~components/extra/Input';
 import GlobalHeaderContext from 'src/context/GlobalHeaderContext';
 
 const NewRow = (props) => {
-    const {formData, handleChange, show, onHide, handleSubmit} = props
+    const {singleData, handleChange, show, onHide, handleSubmit, nameField} = props
 
     const gContext = useContext(GlobalHeaderContext)
 
@@ -38,8 +38,8 @@ const NewRow = (props) => {
                                                 placeholder="Name"
                                                 id="floatinginput5"
                                                 onChange={(e) => handleChange(e)}
-                                                name="income"
-                                                defaultValue={formData?.income}
+                                                name={nameField}
+                                                defaultValue={singleData?.[nameField]}
                                             />
                                             <label htmlFor="floatinginput5">Item Name</label>
                                         </div>
@@ -51,7 +51,7 @@ const NewRow = (props) => {
                                                 id="floatinginput5"
                                                 onChange={(e) => {handleChange(e)}}
                                                 name="monthly"
-                                                defaultValue={formData?.monthly}
+                                                defaultValue={singleData?.monthly}
                                             />
                                             <label htmlFor="floatinginput5">Monthly</label>
                                         </div>
