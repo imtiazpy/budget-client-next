@@ -74,47 +74,47 @@ const CustomDataTable = (props) => {
     setSingleData({...singleData, [e.target.name]: e.target.value})
   }
 
+
+  const addNewData = (data, oldIds) => {
+    let newId = Math.floor(Math.random()* 5) + 1;
+    while (oldIds.has(newId)) {
+      newId = Math.floor(Math.random()* 5) + 1;
+    }  
+    const newSingleData = {...singleData}
+    newSingleData['id'] = newId
+    data.push(newSingleData)
+    saveData(data)
+  }
+
+  const updateData = (oldData) => {
+    for (const data of oldData) {
+      if (data.id === singleData.id) {
+        data[nameField] = singleData[nameField]
+        data.monthly = singleData.monthly
+      }
+    }
+    saveData(oldData)
+  }
+
   const handleSubmit = (e) => {
     e.preventDefault()
     const stored = fetchData()
     const oldIds = new Set()
+
     for (const d of stored) {
       oldIds.add(d.id)
     }
-    console.log(oldIds)
+
     if (oldIds.has(singleData?.id)) {
-      // update existing data
-      console.log("from update")
-      for (const data of stored) {
-        if (data.id === singleData.id) {
-          if (nameField === 'income') {
-            data.income = singleData.income
-          } else {
-            data.expense = singleData.expense
-          }
-          data.monthly = singleData.monthly
-        }
-      }
-      saveData(stored)
-      setTemp(!temp)
+      updateData(stored) 
     } else {
-      // add new data
       if (stored.length === 5) {
         toast.error("You can't add more than 5 rows in trial table!", {theme: "colored"})
-      } else {    
-        let newId = Math.floor(Math.random()* 5) + 1;
-        while (oldIds.has(newId)) {
-          newId = Math.floor(Math.random()* 5) + 1;
-          console.log("from while loop")
-        }  
-        const newSingleData = {...singleData}
-        newSingleData['id'] = newId
-        stored.push(newSingleData)
-        saveData(stored)
-        setTemp(!temp)
+      } else {   
+        addNewData(stored, oldIds)
       }
     }
-
+    setTemp(!temp)
     hideModal()
   }
 
