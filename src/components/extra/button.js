@@ -28,11 +28,11 @@ const ButtonWrapper = styled(Box)`
         }
     }
 `
-const Button = ({btnLink,btnText,type,as,...rest})=>{
+const Button = ({btnLink,btnText,icon,type,as,...rest})=>{
     return(
         <ButtonWrapper {...rest}>
             <Box type={type} as={as} className="btn" to={btnLink ? btnLink : "/"}>
-                {btnText}
+                {btnText}&nbsp;&nbsp;{icon}
             </Box>
         </ButtonWrapper>
     )
