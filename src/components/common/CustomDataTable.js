@@ -4,7 +4,7 @@ import { BsFillPlusCircleFill, BsFillPencilFill, BsFillTrashFill } from 'react-i
 import { toast } from "react-toastify";
 
 import Button from '~components/extra/button';
-import { NewRow } from '~components/Modals';
+import { ConfirmAlert, NewRow } from '~components/Modals';
 
 // for styling the table
 import 'ag-grid-community/dist/styles/ag-grid.css';
@@ -17,8 +17,11 @@ const CustomDataTable = (props) => {
   const [formData, setFormData] = useState([])
   const [singleData, setSingleData] = useState({})
   const [temp, setTemp] = useState(false)
+  const [id, setId] = useState(null)
 
   const [modalShow, setModalShow] = useState(false)
+  const [confirmShow, setConfirmShow] = useState(false)
+
   const [columnDefs, setColumnDefs] = useState([
     { 
       headerName: `${header}`, 
@@ -124,14 +127,17 @@ const CustomDataTable = (props) => {
   }
 
   const handleDelete = (id) => {
-    const confirm = window.confirm("Are you sure, You want to delete the row?")
-    if (confirm) {
-      const stored = fetchData()
-      const newData = stored.filter((row) => row.id !== id)
+    setConfirmShow(!confirmShow)
+    setId(id)
+
+    // const confirm = window.confirm("Are you sure, You want to delete the row?")
+    // if (confirm) {
+    //   const stored = fetchData()
+    //   const newData = stored.filter((row) => row.id !== id)
       
-      saveData(newData)
-      setFormData(newData)
-    } 
+    //   saveData(newData)
+    //   setFormData(newData)
+    // } 
   }
 
   const hideModal = () => {
@@ -187,6 +193,14 @@ const CustomDataTable = (props) => {
             singleData={singleData}
             nameField={nameField}
             handleSubmit={handleSubmit}
+          />
+
+          <ConfirmAlert 
+            show={confirmShow}
+            onHide={setConfirmShow}
+            nameField={nameField}
+            id={id}
+            setFormData={setFormData}
           />
         </div>
       </>
