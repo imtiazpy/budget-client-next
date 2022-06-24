@@ -6,6 +6,8 @@ import { toast } from "react-toastify";
 import Button from '~components/extra/button';
 import { ConfirmAlert, NewRow } from '~components/Modals';
 
+import { fetchData, saveData } from 'src/utils';
+
 // for styling the table
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
@@ -55,23 +57,23 @@ const CustomDataTable = (props) => {
     }},
   ])
 
-  const fetchData = () => {
-    let data;
-    if (nameField === 'income') {
-      data = JSON.parse(localStorage.getItem('incomeData'))
-    } else {
-      data = JSON.parse(localStorage.getItem('expenseData'))
-    }    
-    return data ? data : []
-  }
+  // const fetchData = () => {
+  //   let data;
+  //   if (nameField === 'income') {
+  //     data = JSON.parse(localStorage.getItem('incomeData'))
+  //   } else {
+  //     data = JSON.parse(localStorage.getItem('expenseData'))
+  //   }    
+  //   return data ? data : []
+  // }
 
-  const saveData = (data) => {
-    if (nameField === 'income') {
-      localStorage.setItem('incomeData', JSON.stringify(data))
-    } else {
-      localStorage.setItem('expenseData', JSON.stringify(data))
-    }
-  }
+  // const saveData = (data) => {
+  //   if (nameField === 'income') {
+  //     localStorage.setItem('incomeData', JSON.stringify(data))
+  //   } else {
+  //     localStorage.setItem('expenseData', JSON.stringify(data))
+  //   }
+  // }
 
   const handleChange = (e) => {
     setSingleData({...singleData, [e.target.name]: e.target.value})
@@ -86,22 +88,22 @@ const CustomDataTable = (props) => {
     const newSingleData = {...singleData}
     newSingleData['id'] = newId
     data.push(newSingleData)
-    saveData(data)
+    saveData(data, nameField)
   }
 
-  const updateData = (oldData) => {
-    for (const data of oldData) {
+  const updateData = (newData) => {
+    for (const data of newData) {
       if (data.id === singleData.id) {
         data[nameField] = singleData[nameField]
         data.monthly = singleData.monthly
       }
     }
-    saveData(oldData)
+    saveData(newData, nameField)
   }
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    const stored = fetchData()
+    const stored = fetchData(nameField)
     const oldIds = new Set()
 
     for (const d of stored) {
@@ -155,7 +157,7 @@ const CustomDataTable = (props) => {
   }, []);
 
   useEffect(() => {
-    const data = fetchData()
+    const data = fetchData(nameField)
     setFormData(data)
   }, [temp])
 

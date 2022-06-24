@@ -1,24 +1,17 @@
 import React from 'react';
 import { Modal, Button } from 'react-bootstrap';
 
+import {fetchData, saveData} from 'src/utils';
+
 const ConfirmAlert = (props) => {
     const {show, onHide, nameField, id, setFormData} = props
 
     const handleYes = () => {
-        let stored;
-        if (nameField === 'income') {
-            stored = JSON.parse(localStorage.getItem('incomeData'))
-        } else {
-            stored = JSON.parse(localStorage.getItem('expenseData'))
-        }
-
+        const stored = fetchData(nameField)
         const newData = stored.filter(row => row.id !== id)
 
-        if (nameField === 'income') {
-            localStorage.setItem('incomeData', JSON.stringify(newData))
-        } else {
-            localStorage.setItem('expenseData', JSON.stringify(newData))
-        }
+        saveData(newData, nameField)
+
         setFormData(newData)
 
         onHide(false)
@@ -58,8 +51,8 @@ const ConfirmAlert = (props) => {
                 <div style={style}>
                     <h1>Are you sure?</h1>
                     <p>You want to delete this file?</p>
-                    <button onClick={handleNo} style={btnStyle}>No</button>
-                    <button onClick={handleYes} style={btnStyle}>
+                    <button className='bg-secondary' onClick={handleNo} style={btnStyle}>No</button>
+                    <button className='bg-primary' onClick={handleYes} style={btnStyle}>
                     Yes, Delete it!
                     </button>
                 </div>
