@@ -61,14 +61,23 @@ const CustomDataTable = (props) => {
     setSingleData({...singleData, [e.target.name]: e.target.value})
   }
 
+  const fillUpFields = (data, id) => {
+    const newData = {
+      ...data,
+      id: id,
+      weekly: data.monthly / 4,
+      bi_weekly: data.monthly / 2,
+      yearly: data.monthly * 12
+    }
+    return newData
+  }
 
   const addNewData = (data, oldIds) => {
     let newId = Math.floor(Math.random()* 5) + 1;
     while (oldIds.has(newId)) {
       newId = Math.floor(Math.random()* 5) + 1;
     }  
-    const newSingleData = {...singleData}
-    newSingleData['id'] = newId
+    const newSingleData = fillUpFields({...singleData}, newId)
     data.push(newSingleData)
     saveData(data, nameField)
   }
@@ -78,6 +87,9 @@ const CustomDataTable = (props) => {
       if (data.id === singleData.id) {
         data[nameField] = singleData[nameField]
         data.monthly = singleData.monthly
+        data.weekly = data.monthly / 4
+        data.bi_weekly = data.monthly / 2
+        data.yearly = data.monthly * 12
       }
     }
     saveData(newData, nameField)
@@ -132,6 +144,7 @@ const CustomDataTable = (props) => {
   useEffect(() => {
     const data = fetchData(nameField)
     setFormData(data)
+    console.log(data)
   }, [temp])
 
   return (
@@ -171,6 +184,7 @@ const CustomDataTable = (props) => {
           />
 
           <ConfirmAlert 
+            // This is a modal for confirmation of deleting rows
             show={confirmShow}
             onHide={setConfirmShow}
             nameField={nameField}
