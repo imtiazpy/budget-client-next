@@ -57,24 +57,6 @@ const CustomDataTable = (props) => {
     }},
   ])
 
-  // const fetchData = () => {
-  //   let data;
-  //   if (nameField === 'income') {
-  //     data = JSON.parse(localStorage.getItem('incomeData'))
-  //   } else {
-  //     data = JSON.parse(localStorage.getItem('expenseData'))
-  //   }    
-  //   return data ? data : []
-  // }
-
-  // const saveData = (data) => {
-  //   if (nameField === 'income') {
-  //     localStorage.setItem('incomeData', JSON.stringify(data))
-  //   } else {
-  //     localStorage.setItem('expenseData', JSON.stringify(data))
-  //   }
-  // }
-
   const handleChange = (e) => {
     setSingleData({...singleData, [e.target.name]: e.target.value})
   }
@@ -131,15 +113,6 @@ const CustomDataTable = (props) => {
   const handleDelete = (id) => {
     setConfirmShow(!confirmShow)
     setId(id)
-
-    // const confirm = window.confirm("Are you sure, You want to delete the row?")
-    // if (confirm) {
-    //   const stored = fetchData()
-    //   const newData = stored.filter((row) => row.id !== id)
-      
-    //   saveData(newData)
-    //   setFormData(newData)
-    // } 
   }
 
   const hideModal = () => {
