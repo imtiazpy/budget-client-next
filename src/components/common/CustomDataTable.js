@@ -6,14 +6,14 @@ import { toast } from "react-toastify";
 import Button from '~components/extra/button';
 import { ConfirmAlert, NewRow } from '~components/Modals';
 
-import { fetchData, saveData } from 'src/utils';
+import { calculateTotal, fetchData, saveData } from 'src/utils';
 
 // for styling the table
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
 
 const CustomDataTable = (props) => {
-  const {nameField, header, pinnedBottomRowData} = props
+  const {nameField, header} = props
   const gridRef = useRef();
 
   const [formData, setFormData] = useState([])
@@ -28,7 +28,6 @@ const CustomDataTable = (props) => {
     { 
       headerName: `${header}`, 
       field: `${nameField}`, 
-      cellEditor: 'agTextCellEditor',
     },
     { headerName: 'WEEKLY', field: 'weekly', maxWidth: 180 },
     { headerName: 'BI-WEEKLY', field: 'bi_weekly', maxWidth: 180 },
@@ -36,7 +35,7 @@ const CustomDataTable = (props) => {
     { headerName: 'YEARLY', field: 'yearly', maxWidth: 180 },
     { 
       headerName: 'ACTION', 
-      field: 'id', 
+      field: 'btn', 
       cellRenderer: (params) => {
       return (
         <div>
@@ -48,7 +47,7 @@ const CustomDataTable = (props) => {
           </button>
           <button 
             className="btn btn-primary"
-            onClick={() => handleDelete(params.value)}
+            onClick={() => handleDelete(params.data.id)}
           >
             <BsFillTrashFill />
           </button>
@@ -58,7 +57,7 @@ const CustomDataTable = (props) => {
   ])
 
   const handleChange = (e) => {
-    setSingleData({...singleData, [e.target.name]: e.target.value})
+    setSingleData({...singleData, [e.target.name]: e.target.name === 'monthly' ? e.target.valueAsNumber : e.target.value})
   }
 
   const fillUpFields = (data, id) => {
@@ -118,13 +117,17 @@ const CustomDataTable = (props) => {
   }
 
   const handleUpdate = (data) => {
-    setSingleData(data)
-    setModalShow(!modalShow)
+    if (data[nameField] !== 'Total') {
+      setSingleData(data)
+      setModalShow(!modalShow)
+    }
   }
 
   const handleDelete = (id) => {
-    setConfirmShow(!confirmShow)
-    setId(id)
+    if (id) {
+      setConfirmShow(!confirmShow)
+      setId(id)
+    }
   }
 
   const hideModal = () => {
@@ -141,10 +144,34 @@ const CustomDataTable = (props) => {
     }
   }, []);
 
+  const pinnedBottomRowData = useMemo(() => {
+
+    let weekly_total = 0;
+    let bi_weekly_total = 0;
+    let monthly_total = 0;
+    let yearly_total = 0;
+
+    for (const item of formData) {
+        weekly_total += item.weekly
+        bi_weekly_total += item.bi_weekly
+        monthly_total += item.monthly
+        yearly_total += item.yearly
+    }
+    
+    return [
+      {
+        [nameField]: "Total", 
+        weekly: weekly_total, 
+        bi_weekly: bi_weekly_total, 
+        monthly: monthly_total, 
+        yearly: yearly_total,
+      },
+    ]
+  }, [formData]);
+
   useEffect(() => {
     const data = fetchData(nameField)
     setFormData(data)
-    console.log(data)
   }, [temp])
 
   return (

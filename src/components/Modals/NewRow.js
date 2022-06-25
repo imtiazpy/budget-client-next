@@ -46,7 +46,7 @@ const NewRow = (props) => {
                                         <div className="form-floating col-12 col-lg-6">
                                             <Input
                                                 className="form-control"
-                                                type="text"
+                                                type="number"
                                                 placeholder="Monthly"
                                                 id="floatinginput5"
                                                 onChange={(e) => {handleChange(e)}}
