@@ -16,14 +16,6 @@ const StyledTable = styled.div`
 const TryBudget = () => {
   const api = useApiHelper();
   const router = useRouter();
-
-  // const pinnedBottomRowData = useMemo(() => {
-  //   // TODO: Need to work on this method later to show total of rows
-  //   return [
-  //     {income: "Total", weekly: 3000, bi_weekly: 6000, monthly: 12000, yearly: 144000},
-  //   ]
-  // }, []);
-
  
   return (        
     <StyledTable>
