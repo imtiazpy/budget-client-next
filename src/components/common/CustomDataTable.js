@@ -4,7 +4,7 @@ import { BsFillPlusCircleFill, BsFillPencilFill, BsFillTrashFill } from 'react-i
 import { toast } from "react-toastify";
 
 import Button from '~components/extra/button';
-import { ConfirmAlert, NewRow } from '~components/Modals';
+import { ConfirmAlert, NewRow, CsvContent } from '~components/Modals';
 
 import { calculateTotal, fetchData, saveData } from 'src/utils';
 
@@ -15,6 +15,8 @@ import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
 const CustomDataTable = (props) => {
   const {nameField, header} = props
   const gridRef = useRef();
+  const [csv, setCsv] = useState("")
+  const [showCsv, setShowCsv] = useState(false)
 
   const [formData, setFormData] = useState([])
   const [singleData, setSingleData] = useState({})
@@ -169,6 +171,16 @@ const CustomDataTable = (props) => {
     ]
   }, [formData]);
 
+  const onExportClick = useCallback(() => {
+    gridRef.current.api.exportDataAsCsv();
+  }, [])
+
+  const onShowCsv = () => {
+    const value = gridRef.current.api.getDataAsCsv();
+    setCsv(value)
+    setShowCsv(!showCsv)
+  }
+
   useEffect(() => {
     const data = fetchData(nameField)
     setFormData(data)
@@ -187,37 +199,66 @@ const CustomDataTable = (props) => {
               animateRows={true}
               rowSelection='multiple'
               pagination={true}
-              rowDragManaged={true}
-              suppressMoveWhenRowDragging={false}
+              // paginationPageSize={4}
+              paginationAutoPageSize={true}
               pinnedBottomRowData={pinnedBottomRowData}
             />
           </div>
         </div>  
         <div className='d-flex justify-content-end mt-2'>
-          <Button 
-            onClick={()=>setModalShow(!modalShow)} 
-            btnText={"Add Row"}
-            icon={<BsFillPlusCircleFill />}
-          />
+          <div className='row gx-2'>
+            <div className='col'>
+            <Button 
+              onClick={()=>setModalShow(!modalShow)} 
+              btnText={"Add Row"}
+              icon={<BsFillPlusCircleFill />}
+            />
+            </div>
+          
+            <div className="col">
+            <Button 
+              onClick={()=>onExportClick()} 
+              btnText={"Export"}
+              icon={<BsFillPlusCircleFill />}
+            />
+            </div>
+         
+            <div className="col">
+            <Button 
+              onClick={()=>onShowCsv()} 
+              btnText={"Show CSV Content"}
+              icon={<BsFillPlusCircleFill />}
+            />
+            </div>
+          </div>
 
-          <NewRow 
-            // This is a modal for adding new row to the table
-            show={modalShow}
-            onHide={() => hideModal()}
-            handleChange={handleChange}
-            singleData={singleData}
-            nameField={nameField}
-            handleSubmit={handleSubmit}
-          />
+          <div id="modals">
+            <NewRow 
+              // This is a modal for adding new row to the table
+              show={modalShow}
+              onHide={() => hideModal()}
+              handleChange={handleChange}
+              singleData={singleData}
+              nameField={nameField}
+              handleSubmit={handleSubmit}
+            />
 
-          <ConfirmAlert 
-            // This is a modal for confirmation of deleting rows
-            show={confirmShow}
-            onHide={setConfirmShow}
-            nameField={nameField}
-            id={id}
-            setFormData={setFormData}
-          />
+            <ConfirmAlert 
+              // This is a modal for confirmation of deleting rows
+              show={confirmShow}
+              onHide={setConfirmShow}
+              nameField={nameField}
+              id={id}
+              setFormData={setFormData}
+            />
+
+            <CsvContent 
+              show={showCsv}
+              onHide={() => setShowCsv(!showCsv)}
+              csv={csv}
+            />
+
+          </div>
         </div>
       </>
   );
