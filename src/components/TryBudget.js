@@ -4,7 +4,7 @@ import useApiHelper from '../api';
 import { useRouter } from "next/router";
 
 import { Container, Row, Col } from 'react-bootstrap';
-import { CustomDataTable } from "./common";
+import { CustomDataTable, DoughnutChart } from "./common";
 
 const StyledTable = styled.div`
   background-color: #f3f4f6;
@@ -16,12 +16,20 @@ const StyledTable = styled.div`
 const TryBudget = () => {
   const api = useApiHelper();
   const router = useRouter();
+
+  const [refresh, setRefresh] = useState(false)
  
   return (        
     <StyledTable>
         <Container>
             <h1 className="text-center pb-4" id="budget">Try this free playground</h1>
             <Row className="gy-5">
+                <Col md="12">
+                  <DoughnutChart 
+                    nameField={"expense"}
+                    refresh={refresh}
+                  />
+                </Col>
                 <Col md="12">
                   <CustomDataTable 
                     nameField="income" 
@@ -32,6 +40,8 @@ const TryBudget = () => {
                   <CustomDataTable 
                     nameField="expense" 
                     header="EXPENSE"
+                    refresh={refresh}
+                    setRefresh={setRefresh}
                   />
                 </Col>
             </Row>            
