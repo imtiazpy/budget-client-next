@@ -13,7 +13,7 @@ import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
 
 const CustomDataTable = (props) => {
-  const {nameField, header} = props
+  const {nameField, header, refresh, setRefresh} = props
   const gridRef = useRef();
   const [csv, setCsv] = useState("")
   const [showCsv, setShowCsv] = useState(false)
@@ -114,6 +114,7 @@ const CustomDataTable = (props) => {
         addNewData(stored, oldIds)
       }
     }
+    setRefresh(!refresh)
     setTemp(!temp)
     hideModal()
   }
@@ -129,6 +130,7 @@ const CustomDataTable = (props) => {
     if (id) {
       setConfirmShow(!confirmShow)
       setId(id)
+      setRefresh(!refresh)
     }
   }
 

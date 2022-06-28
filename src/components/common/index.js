@@ -1,3 +1,4 @@
-import CustomDataTable from "./CustomDataTable"
+import CustomDataTable from "./CustomDataTable";
+import DoughnutChart from "./DoughnutChart";
 
-export {CustomDataTable};
+export {CustomDataTable, DoughnutChart};
