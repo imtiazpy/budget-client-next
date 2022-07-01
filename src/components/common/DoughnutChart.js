@@ -4,12 +4,6 @@ import { AgChartsReact } from 'ag-charts-react';
 import { fetchData } from 'src/utils';
 
 const DoughnutChart = ({nameField, refresh}) => {
-    // const [totalMonthly, setTotalMonthly] = useState()
-    // const [itemsNumber, setItemsNumber] = useState()
-
-    let totalMonthly = 0;
-    let totalItems;
-
 
     const [options, setOptions] = useState({
         type: 'polar',
@@ -22,20 +16,6 @@ const DoughnutChart = ({nameField, refresh}) => {
                 // title: {enabled: true, text: 'Monthly Budgeted Expense', padding: {bottom: 500}}, 
                 //useful for nested doughnut
                 shadow: {enabled: true, color: '#807d77', xOffset: 5, yOffset: 5, blur: 5},
-                tooltip: {
-                    // enabled: true,
-                    renderer: ({labelKey, angleKey, angleValue}) => {
-
-                        const percentage = parseFloat(100 / (totalMonthly / angleValue)).toFixed(2) 
-
-                        return `
-                            <div style="padding: 10px 20px">
-                                <p>${angleValue}$</p>
-                                <p>${percentage}%</p>
-                            </div>
-                        `
-                    }
-                }
             },
         ],
         title: {enabled: true, text: "Budget-2022", padding: {bottom: 1000}, fontSize: 24},
@@ -54,6 +34,7 @@ const DoughnutChart = ({nameField, refresh}) => {
 
     useEffect(() => {
         const data = fetchData(nameField)
+        let totalMonthly = 0;
         const optionsData = []
         
         for (const item of data) {
@@ -61,11 +42,29 @@ const DoughnutChart = ({nameField, refresh}) => {
             totalMonthly += item.monthly
         }
 
-        setOptions({...options, data: optionsData})
+        setOptions({
+            ...options, 
+            data: optionsData,
+            series: [{
+                ...options.series[0],
+                tooltip: {
+                    enabled: true,
+                    renderer: ({labelKey, angleKey, angleValue}) => {
+                        const percentage = parseFloat(100 / (totalMonthly / angleValue)).toFixed(2) 
+
+                        return `
+                            <div style="padding: 10px 30px">
+                                <p>${angleValue}$</p>
+                                <hr />
+                                <p>${percentage}%</p>
+                            </div>
+                        `
+                    }
+                }
+                      
+            }]
+        })
         
-        totalItems = optionsData.length
-
-
     }, [refresh])
 
     return (
