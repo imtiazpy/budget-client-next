@@ -4,7 +4,7 @@ import { Modal, Button } from 'react-bootstrap';
 import {fetchData, saveData} from 'src/utils';
 
 const ConfirmAlert = (props) => {
-    const {show, onHide, nameField, id, setFormData} = props
+    const {show, onHide, nameField, id, setFormData, refresh, setRefresh} = props
 
     const handleYes = () => {
         const stored = fetchData(nameField)
@@ -13,6 +13,7 @@ const ConfirmAlert = (props) => {
         saveData(newData, nameField)
 
         setFormData(newData)
+        setRefresh(!refresh) // passing this to DoughnutChart component to rerender upon deletion.
 
         onHide(false)
     }
@@ -23,7 +24,6 @@ const ConfirmAlert = (props) => {
 
     const style = {
         background: 'deepskyblue', 
-        // width: '400px',
         height: '200px',
         textAlign: "center",
         color: 'white',

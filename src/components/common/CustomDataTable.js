@@ -130,7 +130,6 @@ const CustomDataTable = (props) => {
     if (id) {
       setConfirmShow(!confirmShow)
       setId(id)
-      setRefresh(!refresh)
     }
   }
 
@@ -252,6 +251,8 @@ const CustomDataTable = (props) => {
               nameField={nameField}
               id={id}
               setFormData={setFormData}
+              refresh={refresh}
+              setRefresh={setRefresh}
             />
 
             <CsvContent 
