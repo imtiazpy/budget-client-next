@@ -34,6 +34,8 @@ const TryBudget = () => {
                   <CustomDataTable 
                     nameField="income" 
                     header="INCOME" 
+                    refresh={refresh}
+                    setRefresh={setRefresh}
                   />
                 </Col>
                 <Col md="12">
